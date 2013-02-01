@@ -7,9 +7,10 @@
 <div class="page-header">
     <h2><img src="@user.avatarUrl" alt="@user.fullName" width="40px" height="40px"/> Welcome @user.firstName</h2>
 </div>
-
-<div class="clearfix">
-    <h2>User Details</h2>
+<div class="row-fluid">
+    <div class="span2">
+      <!--Sidebar content-->
+      <h2>User Details</h2>
 
     <ul>
         <li>User Id: @user.id.id</li>
@@ -20,36 +21,16 @@
         <li>Email: @user.email.map { email => @email }.getOrElse("Not Available")</li>
         <li>Authentication method: @user.authMethod</li>
     </ul>
-
-@***********************************
-    @user.oAuth1Info.map { info =>
-    <h2>OAuth1 Info</h2>
-
-    <ul>
-        <li>Token: @info.token</li>
-        <li>Secret: @info.secret</li>
-    </ul>
-    }
-
-    @user.oAuth2Info.map { info =>
-    <h2>OAuth2 Info</h2>
-
-    <ul>
-        <li>Access Token: @info.accessToken</li>
-        @info.tokenType.map { t => <li>Token Type: @t</li> }
-        @info.expiresIn.map { exp => <li>Expires in: @exp seconds</li>}
-        @info.refreshToken.map { rt => <li>Refresh Token: @rt</li>}
-    </ul>
-    }
-***********************************@
-    <hr>
+     <hr>
     @user.passwordInfo.map { info =>
 	<a class="btn" href="@securesocial.core.providers.utils.RoutesHelper.changePasswordPage.absoluteURL(Implicit.request(), IdentityProvider.sslEnabled)">Change Password</a>
     }
     <a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
 </div>
-
-    <h1>@tasks.size() task(s)</h1>
+      
+    <div class="span10">
+      <!--Body content-->
+      <h1>@tasks.size() task(s)</h1>
     
     <ul>
         @for(task <- tasks) {
@@ -72,6 +53,7 @@
         <input class="btn btn-primary" type="submit" value="Create">
         
     }
-
-
+      
+    </div>
+  </div>
 }
