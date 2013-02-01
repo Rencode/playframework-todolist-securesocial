@@ -3,12 +3,15 @@ package models;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.h2.engine.User;
 
+import play.data.validation.Constraints.Email;
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
 import scala.Option;
@@ -36,8 +39,9 @@ public class AppUser extends Model implements Identity {
 
 	public String lastName;
 
-	public String avatarUrl;
+	// public String avatarUrl;
 
+	@Email
 	public String email;
 
 	public String fullName;
@@ -46,10 +50,10 @@ public class AppUser extends Model implements Identity {
 
 	public String password;
 
-	public String salt;
+	// public String salt;
 
-	// @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
-	// public Set<Task> task;
+	@OneToMany(cascade = CascadeType.ALL)
+	public Set<Task> task;
 
 	public static Finder<Long, AppUser> find = new Finder(Long.class,
 			AppUser.class);
@@ -59,18 +63,23 @@ public class AppUser extends Model implements Identity {
 				.eq("providerId", userId.providerId()).findUnique();
 	}
 
+	public static void create(final Identity user) {
+		final AppUser appUser = new AppUser(user);
+		appUser.save();
+	}
+
 	public AppUser(final Identity user) {
 		this.userId = user.id().id();
 		this.providerId = user.id().providerId();
-		this.avatarUrl = user.avatarUrl().toString();
-		this.email = user.email().toString();
+		// this.avatarUrl = user.avatarUrl().toString();
+		this.email = user.email().get();
 		this.firstName = user.firstName();
 		this.fullName = user.fullName();
 		this.lastName = user.lastName();
 
 		final PasswordInfo passwordInfo = user.passwordInfo().get();
 		this.password = passwordInfo.password();
-		this.salt = passwordInfo.salt().toString();
+		// this.salt = passwordInfo.salt().toString();
 		this.hasher = passwordInfo.hasher();
 	}
 
@@ -88,7 +97,7 @@ public class AppUser extends Model implements Identity {
 
 	@Override
 	public Option<String> avatarUrl() {
-		return new Some<String>(avatarUrl);
+		return new Some<String>("");
 	}
 
 	@Override
@@ -131,7 +140,7 @@ public class AppUser extends Model implements Identity {
 	@Override
 	public Option<PasswordInfo> passwordInfo() {
 		final PasswordInfo passwordInfo = new PasswordInfo(hasher, password,
-				new Some<String>(salt));
+				new Some<String>(""));
 		return new Some<PasswordInfo>(passwordInfo);
 	}
 

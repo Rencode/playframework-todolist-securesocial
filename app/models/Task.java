@@ -2,10 +2,13 @@ package models;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -20,7 +23,8 @@ public class Task extends Model {
 	@Required
 	public String label;
 
-	public String userName;
+	@ManyToOne
+	public AppUser appUser;
 
 	public static Finder<Long, Task> find = new Finder(Long.class, Task.class);
 
@@ -40,21 +44,12 @@ public class Task extends Model {
 		this.label = label;
 	}
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
 	public static List<Task> all(final Identity user) {
-		return find.where().eq("userName", user.email().toString()).findList();
+		return find.where().eq("appUser", user).findList();
 	}
 
-	public static void create(Task task, final Identity user) {
-		// task.userId = user.id();
-		task.userName = user.email().toString();
+	public static void create(Task task, final Identity appUser) {
+		task.appUser = (AppUser) appUser;
 		task.save();
 	}
 

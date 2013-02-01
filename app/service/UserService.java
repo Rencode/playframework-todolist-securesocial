@@ -46,14 +46,7 @@ public class UserService extends BaseUserService {
 
 	@Override
 	public void doSave(Identity user) {
-		final AppUser appUser = new AppUser(user);
-		appUser.save();
-		// users.put(user.id().id() + user.id().providerId(), user);
-		// final SocialUser u = new SocialUser();
-		// final User newUser = new User();
-		// newUser.firstName = user.firstName();
-		// newUser.lastName = user.lastName();
-		// newUser.save();
+		AppUser.create(user);
 	}
 
 	@Override

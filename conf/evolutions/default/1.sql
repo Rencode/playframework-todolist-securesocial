@@ -9,19 +9,17 @@ create table app_user (
   provider_id               varchar(255),
   first_name                varchar(255),
   last_name                 varchar(255),
-  avatar_url                varchar(255),
   email                     varchar(255),
   full_name                 varchar(255),
   hasher                    varchar(255),
   password                  varchar(255),
-  salt                      varchar(255),
   constraint pk_app_user primary key (id))
 ;
 
 create table task (
   id                        bigint not null,
   label                     varchar(255),
-  user_name                 varchar(255),
+  app_user_id               bigint,
   constraint pk_task primary key (id))
 ;
 
@@ -29,6 +27,8 @@ create sequence app_user_seq;
 
 create sequence task_seq;
 
+alter table task add constraint fk_task_appUser_1 foreign key (app_user_id) references app_user (id) on delete restrict on update restrict;
+create index ix_task_appUser_1 on task (app_user_id);
 
 
 
